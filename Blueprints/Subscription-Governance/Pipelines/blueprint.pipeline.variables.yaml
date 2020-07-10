@@ -1,5 +1,5 @@
 variables:
-  blueprintName: New-Project
+  blueprintName: Subscription-Governance
   poolName: Hosted VS2017
   serviceConnection: <yourConnectionName>
   artifactName: Artifacts
