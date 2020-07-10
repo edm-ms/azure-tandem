@@ -22,6 +22,7 @@
         "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]",
         "regionName": "[replace(replace(replace(replace(replace(variables('location'),'north','n'), 'east', 'e'),'south', 's'),'west', 'w'),'central', 'c')]",
         "nameFormat": "[concat(variables('regionName'), '-', parameters('environment'), '-', toLower(parameters('appName')), '-')]",
+        "logName": "[concat(variables('regionName'), '-', parameters('environment'), '-', toLower(parameters('appName')), take(uniqueString(subscription().id), 6), '-law')]",
         "shortName": {
             "keyVault": "kv",
             "logAnalytics": "law",
@@ -37,7 +38,7 @@
       "resources": [
         {
           "type": "Microsoft.OperationalInsights/workspaces",
-          "name": "[concat(variables('nameFormat'), take(uniqueString(subscription().id), 5), '-', variables('shortName').logAnalytics)]",
+          "name": "[variables('logName')]",
           "apiVersion": "2020-03-01-preview",
           "location": "[variables('location')]",
           "tags": {
@@ -54,11 +55,11 @@
       "outputs": {
         "workspaceID": {
           "type": "string",
-          "value": "[resourceId('Microsoft.OperationalInsights/workspaces', concat(variables('nameFormat'), take(uniqueString(subscription().id), 5), '-', variables('shortName').logAnalytics))]"
+          "value": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logName'))]"
         },
         "workspaceName": {
           "type": "string",
-          "value": "[concat(variables('nameFormat'), take(uniqueString(subscription().id), 5), '-', variables('shortName').logAnalytics)]"
+          "value": "[variables('logName')]"
         }
       }
     },
