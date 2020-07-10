@@ -1,0 +1,74 @@
+{
+    "kind": "template",
+    "properties": {
+        "displayName": "Storage Account",
+        "description": "Storage account for centralized logging.",
+        "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "environment": {
+                    "type": "string"
+                },
+                "appName": {
+                    "type": "string"
+                },
+                "dataClass": {
+                    "type": "string"
+                }
+            },
+            "variables": {
+            "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]",
+            "regionName": "[replace(replace(replace(replace(replace(variables('location'),'north','n'), 'east', 'e'),'south', 's'),'west', 'w'),'central', 'c')]",
+            "storageName": "[concat(variables('regionName'), parameters('environment'), toLower(parameters('appName')), 'sa', take(uniqueString(resourceGroup().id), 4))]",
+            "nameFormat": "[concat(variables('regionName'), '-', parameters('environment'), '-', toLower(parameters('appName')), '-')]",
+            "shortName": {
+                "keyVault": "kv",
+                "logAnalytics": "law",
+                "azureFirewall": "azfw",
+                "networkSecurityGroup": "nsg",
+                "azureFrontDoor": "afd",
+                "publicIP": "pip",
+                "managedIdentity": "mi",
+                "sqlDB": "sql",
+                "sqlMI": "sqlmi"
+                }
+            },
+            "resources": [
+                {
+                    "name": "[variables('storageName')]",
+                    "type": "Microsoft.Storage/storageAccounts",
+                    "apiVersion": "2019-04-01",
+                    "location": "[variables('location')]",
+                    "tags": {
+                        "Blueprint": "Platform-Management"
+                    },
+                    "sku": {
+                        "name": "Standard_GRS"
+                    },
+                    "kind": "StorageV2",
+                    "properties": {
+                        "supportsHttpsTrafficOnly": true,
+                        "deleteRetentionPolicy": {
+                            "enabled": true,
+                            "day": 30
+                        }
+                    }
+                }
+            ],
+            "outputs": {}
+        },
+        "resourceGroup": "Logging-RG",
+        "parameters": {
+            "environment": {
+                "value": "[parameters('environment')]"
+            },
+            "appName": {
+                "value": "platform"
+            },
+            "dataClass": {
+                "value": "Internal"
+            }
+        }
+    }
+}

@@ -1,0 +1,56 @@
+{
+  "kind": "template",
+  "properties": {
+    "displayName": "Azure Sentinel",
+    "description": "Attach Azure Sentinel to Logging Workspace",
+    "dependsOn": ["log-workspace"],
+    "template": {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "parameters": {
+            "workspaceId": {
+                "type": "string"
+            },
+            "workspaceName": {
+                "type": "string"
+            },
+            "environment": {
+              "type": "string"
+            }
+        },
+        "variables": {
+            "azureSentinelSolutionName": "[concat('SecurityInsights', '(', parameters('workspaceName'), ')')]",
+            "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]"
+        },
+        "resources": [
+            {
+                "type": "Microsoft.OperationsManagement/solutions",
+                "apiVersion": "2015-11-01-preview",
+                "name": "[variables('azureSentinelSolutionName')]",
+                "location": "[variables('location')]",
+                "plan": {
+                    "name": "[variables('azureSentinelSolutionName')]",
+                    "product": "OMSGallery/SecurityInsights",
+                    "publisher": "Microsoft",
+                    "promotionCode": ""
+                },
+                "properties": {
+                    "workspaceResourceId": "[parameters('workspaceId')]"
+                }
+            }
+        ]
+    },
+    "resourceGroup": "Logging-RG",
+    "parameters": {
+      "environment": {
+        "value": "[parameters('environment')]"
+      },
+      "workspaceName": {
+        "value": "[artifacts('log-workspace').outputs.workspaceName]" 
+      },
+      "workspaceId": {
+        "value": "[artifacts('log-workspace').outputs.workspaceID]"
+      }
+    }
+  }
+}

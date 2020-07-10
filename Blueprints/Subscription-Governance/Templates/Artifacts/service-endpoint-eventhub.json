@@ -1,0 +1,13 @@
+{
+  "kind": "policyAssignment",
+  "properties": {
+    "displayName": "Event Hub should use a virtual network service endpoint",
+    "dependsOn": [],
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/d63edb4a-c612-454d-b47d-191a724fcbf0",
+    "parameters": {
+      "effect": {
+        "value": "AuditIfNotExists"
+      }
+    }
+  }
+}

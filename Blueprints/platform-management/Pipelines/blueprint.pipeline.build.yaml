@@ -1,0 +1,61 @@
+parameters:
+  blueprintName: $(blueprintName)
+  pool: $(poolName)
+  serviceConnection: $(serviceConnection)
+  artifactName: $(artifactName)
+
+jobs:
+  - job: 'Blueprint'
+    displayName: 'Blueprint Job'
+    pool:
+      name: $(poolName)
+    workspace:
+      clean: all
+    steps:
+    - task: PowerShell@2
+      displayName: 'Test: ${{ parameters.blueprintName }} (Pester)'
+      inputs:
+        targetType: inline
+        script: |
+          Install-Module Pester -Force -ErrorAction Stop -SkipPublisherCheck
+
+          $PesterSettings  = @{
+            Script       = "$(System.DefaultWorkingDirectory)/Blueprints/${{ parameters.blueprintName }}/Tests/blueprint.tests.ps1"
+            OutputFile   = "$(System.DefaultWorkingDirectory)/Test-Pester.XML"
+            OutputFormat = "NUnitXml"
+            EnableExit   = $true
+            Verbose      = $true
+          }
+
+          Invoke-Pester @PesterSettings
+
+    - task: PublishTestResults@2
+      displayName: Publish Test Results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: NUnit
+        testResultsFiles: $(System.DefaultWorkingDirectory)/Test-Pester.XML
+        mergeTestResults: true
+        testRunTitle: 'Build - Pester Unit Tests'
+      continueOnError: true
+
+    - task: PowerShell@2
+      displayName: 'Build ARM Templates'
+      inputs:
+        filePath: "$(System.DefaultWorkingDirectory)/Blueprints/${{ parameters.blueprintName }}/Tests/blueprint-template-extract.ps1"
+
+    - task: CopyFiles@2
+      displayName: Copy ${{ parameters.blueprintName }} Files
+      inputs:
+        Contents: |
+          Blueprints/${{ parameters.blueprintName }}/Templates/**
+          Blueprints/${{ parameters.blueprintName }}/BuildArtifacts/**
+
+        targetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifacts'
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: '${{ parameters.artifactName }}'
+        publishLocation: 'Container'

@@ -1,0 +1,102 @@
+{
+    "kind": "template",
+    "properties": {
+        "displayName": "Resource Group",
+        "description": "",
+        "template": {
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Environment": {
+      "type": "string"
+    },
+    "ApplicationName": {
+      "type": "string"
+    },
+    "ApplicationOwner": {
+      "type": "string"
+    },
+    "BusinessCriticality": {
+      "type": "string"
+    },
+    "ContactEmail": {
+      "type": "string"
+    },
+    "CostCenter": {
+      "type": "string"
+    },
+    "DataClassification": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]",
+    "regionName": "[replace(replace(replace(replace(replace(variables('location'),'north','n'), 'east', 'e'),'south', 's'),'west', 'w'),'central', 'c')]",
+    "appPurpose": "[toLower(parameters('ApplicationName'))]",
+    "nameFormat": "[concat(variables('regionName'), '-', parameters('environment'), '-', variables('appPurpose'), '-')]",
+    "shortName": {
+      "keyVault": "kv",
+      "logAnalytics": "law",
+      "azureFirewall": "azfw",
+      "networkSecurityGroup": "nsg",
+      "azureFrontDoor": "afd",
+      "publicIP": "pip",
+      "managedIdentity": "mi",
+      "sqlDB": "sql",
+      "sqlMI": "sqlmi",
+      "resourceGroup": "rg"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2019-10-01",
+      "name": "[concat(variables('nameFormat'), variables('shortName').resourceGroup)]",
+      "location": "[variables('location')]",
+      "tags": {
+        "Application Name": "[parameters('ApplicationName')]",
+        "Application Owner": "[parameters('ApplicationOwner')]",
+        "Business Criticality": "[parameters('BusinessCriticality')]",
+        "Contact Email": "[parameters('ContactEmail')]",
+        "Cost Center": "[parameters('CostCenter')]",
+        "Data Classification": "[parameters('DataClassification')]"
+      },
+      "properties": {}
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "value": "[concat(variables('nameFormat'), variables('shortName').resourceGroup)]"
+    },
+    "resourceGroupID": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Resources/resourceGroups', concat(variables('nameFormat'), variables('shortName').resourceGroup))]"
+  }
+}
+},
+        "parameters": {
+            "Environment": {
+                "value": "[parameters('Environment')]"
+            },
+            "ApplicationName": {
+                "value": "[parameters('ApplicationName')]"
+            },
+            "ApplicationOwner": {
+                "value": "[parameters('ApplicationOwner')]"
+            },
+            "BusinessCriticality": {
+                "value": "[parameters('BusinessCriticality')]"
+            },
+            "ContactEmail": {
+                "value": "[parameters('ContactEmail')]"
+            },
+            "CostCenter": {
+                "value": "[parameters('CostCenter')]"
+            },
+            "DataClassification": {
+                "value": "[parameters('DataClassification')]"
+            }
+        }
+    }
+}

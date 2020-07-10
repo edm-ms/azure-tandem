@@ -1,0 +1,7 @@
+variables:
+  blueprintName: platform-management
+  poolName: Hosted VS2017
+  serviceConnection: <yourConnectionName>
+  artifactName: Artifacts
+  blueprintScope: ManagementGroupId
+  blueprintTarget: <yourSuborMgtGroup>

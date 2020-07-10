@@ -1,0 +1,294 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "alertEmail": {
+        "type": "array",
+        "defaultValue": ["email1@contoso.com", "email2@contoso.com"],
+        "metadata": {
+          "description": "JSON array of email addresses"
+        }
+      }
+    },
+    "variables": {},
+    "resources": [
+      {
+        "name": "ccoe-alerting",
+        "type": "microsoft.insights/actionGroups",
+        "apiVersion": "2019-06-01",
+        "location": "global",
+        "properties": {
+          "groupShortName": "ccoe",
+          "enabled": "true",
+          "copy": [
+            {
+              "name": "emailReceivers",
+              "count": "[length(parameters('alertEmail'))]",
+              "input": {
+                "name": "[concat('email', copyIndex('emailReceivers'))]",
+                "emailAddress": "[parameters('alertEmail')[copyIndex('emailReceivers')]]",
+                "useCommonAlertSchema": "true"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "microsoft.insights/activityLogAlerts",
+        "apiVersion": "2017-04-01",
+        "name": "IAM Changes",
+        "location": "global",
+        "dependsOn": [
+          "ccoe-alerting"
+        ],
+        "properties": {
+          "scopes": [
+            "[subscription().Id]"
+          ],
+          "condition": {
+            "allOf": [
+              {
+                "field": "category",
+                "equals": "Administrative"
+              },
+              {
+                "field": "resourceType",
+                "equals": "microsoft.authorization/roleassignments"
+              },
+              {
+                "field": "status",
+                "equals": "succeeded"
+              }
+            ]
+          },
+          "actions": {
+            "actionGroups": [
+              {
+                "actionGroupId": "[resourceId('microsoft.insights/actionGroups', 'ccoe-alerting')]",
+                "webhookProperties": {}
+              }
+            ]
+          },
+          "enabled": true,
+          "description": "IAM Changes"
+        }
+      },
+      {
+        "type": "microsoft.insights/activityLogAlerts",
+        "apiVersion": "2017-04-01",
+        "name": "NSG Modification",
+        "location": "global",
+        "dependsOn": [
+          "ccoe-alerting"
+        ],
+        "properties": {
+          "scopes": [
+            "[subscription().Id]"
+          ],
+          "condition": {
+            "allOf": [
+              {
+                "field": "category",
+                "equals": "Administrative"
+              },
+              {
+                "field": "resourceType",
+                "equals": "microsoft.network/networksecuritygroups"
+              },
+              {
+                "field": "operationName",
+                "equals": "Microsoft.Network/networkSecurityGroups/write"
+              },
+              {
+                "field": "status",
+                "equals": "succeeded"
+              }
+            ]
+          },
+          "actions": {
+            "actionGroups": [
+              {
+                "actionGroupId": "[resourceId('microsoft.insights/actionGroups', 'ccoe-alerting')]",
+                "webhookProperties": {}
+              }
+            ]
+          },
+          "enabled": true
+        }
+      },
+
+
+      {
+        "type": "microsoft.insights/activityLogAlerts",
+        "apiVersion": "2017-04-01",
+        "name": "VNet Modification",
+        "location": "global",
+        "dependsOn": [
+          "ccoe-alerting"
+        ],
+        "properties": {
+          "scopes": [
+            "[subscription().Id]"
+          ],
+          "condition": {
+            "allOf": [
+              {
+                "field": "category",
+                "equals": "Administrative"
+            },
+            {
+                "field": "resourceType",
+                "equals": "microsoft.network/virtualnetworks"
+            },
+            {
+                "field": "operationName",
+                "equals": "Microsoft.Network/virtualNetworks/write"
+            },
+            {
+                "field": "status",
+                "equals": "succeeded"
+            }
+            ]
+          },
+          "actions": {
+            "actionGroups": [
+              {
+                "actionGroupId": "[resourceId('microsoft.insights/actionGroups', 'ccoe-alerting')]",
+                "webhookProperties": {}
+              }
+            ]
+          },
+          "enabled": true
+        }
+      },
+      {
+        "type": "microsoft.insights/activityLogAlerts",
+        "apiVersion": "2017-04-01",
+        "name": "New RG Created",
+        "location": "Global",
+        "dependsOn": [
+          "ccoe-alerting"
+        ],
+        "properties": {
+          "scopes": [
+            "[subscription().Id]"
+          ],
+          "condition": {
+            "allOf": [
+              {
+                "field": "category",
+                "equals": "Administrative"
+              },
+              {
+                "field": "resourceType",
+                "equals": "microsoft.resources/subscriptions/resourcegroups"
+              },
+              {
+                "field": "operationName",
+                "equals": "Microsoft.Resources/subscriptions/resourceGroups/write"
+              },
+            {
+                "field": "status",
+                "equals": "succeeded"
+            }
+            ]
+          },
+          "actions": {
+            "actionGroups": [
+              {
+                "actionGroupId": "[resourceId('microsoft.insights/actionGroups', 'ccoe-alerting')]",
+                "webhookProperties": {}
+              }
+            ]
+          },
+          "enabled": true
+        }
+      },
+      {
+        "type": "microsoft.insights/activityLogAlerts",
+        "apiVersion": "2017-04-01",
+        "name": "Public IP Creation",
+        "location": "global",
+        "dependsOn": [
+          "ccoe-alerting"
+        ],
+        "properties": {
+          "scopes": [
+            "[subscription().Id]"
+          ],
+          "condition": {
+            "allOf": [
+              {
+                "field": "category",
+                "equals": "Administrative"
+              },
+              {
+                "field": "resourceType",
+                "equals": "microsoft.network/publicipaddresses"
+              },
+              {
+                "field": "operationName",
+                "equals": "Microsoft.Network/publicIPAddresses/write"
+              },
+              {
+                "field": "status",
+                "equals": "succeeded"
+              }
+            ]
+          },
+          "actions": {
+            "actionGroups": [
+              {
+                "actionGroupId": "[resourceId('microsoft.insights/actionGroups', 'ccoe-alerting')]",
+                "webhookProperties": {}
+              }
+            ]
+          },
+          "enabled": true
+        }
+      },
+      {
+        "type": "microsoft.insights/activityLogAlerts",
+        "apiVersion": "2017-04-01",
+        "name": "Route Table Modification",
+        "location": "global",
+        "dependsOn": [
+          "ccoe-alerting"
+        ],
+        "properties": {
+          "scopes": [
+            "[subscription().Id]"
+          ],
+          "condition": {
+            "allOf": [
+              {
+                "field": "category",
+                "equals": "Administrative"
+              },
+              {
+                "field": "resourceType",
+                "equals": "microsoft.network/routetables"
+              },
+              {
+                "field": "operationName",
+                "equals": "Microsoft.Network/routeTables/write"
+              },
+              {
+                "field": "status",
+                "equals": "succeeded"
+              }
+            ]
+          },
+          "actions": {
+            "actionGroups": [
+              {
+                "actionGroupId": "[resourceId('microsoft.insights/actionGroups', 'ccoe-alerting')]",
+                "webhookProperties": {}
+              }
+            ]
+          },
+          "enabled": true
+        }
+      }
+    ]
+  }

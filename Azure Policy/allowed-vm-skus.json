@@ -1,0 +1,27 @@
+{
+  "kind": "policyAssignment",
+  "properties": {
+    "displayName": "Allowed Virtual Machine SKUs",
+    "dependsOn": [],
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3",
+    "parameters": {
+      "listOfAllowedSKUs": {
+        "value": [
+          "Standard_B1ms",
+          "Standard_F2s_v2",
+          "Standard_B2s",
+          "Standard_B2ms",
+          "Standard_D2s_v3",
+          "Standard_B4ms",
+          "Standard_D4s_v3",
+          "Standard_F8s_v2",
+          "Standard_B8ms",
+          "Standard_D8s_v3",
+          "Standard_E8s_v3",
+          "Standard_F16s_v2",
+          "Standard_E16s_v3"
+        ]
+      }
+    }
+  }
+}
