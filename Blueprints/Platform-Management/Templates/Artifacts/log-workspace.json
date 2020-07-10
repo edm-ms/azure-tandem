@@ -37,7 +37,7 @@
       "resources": [
         {
           "type": "Microsoft.OperationalInsights/workspaces",
-          "name": "[concat(variables('nameFormat'), variables('shortName').logAnalytics)]",
+          "name": "[concat(variables('nameFormat'), take(uniqueString(resourceGroup().id), 5), '-', variables('shortName').logAnalytics)]",
           "apiVersion": "2020-03-01-preview",
           "location": "[variables('location')]",
           "tags": {
@@ -54,11 +54,11 @@
       "outputs": {
         "workspaceID": {
           "type": "string",
-          "value": "[resourceId('Microsoft.OperationalInsights/workspaces', concat(variables('nameFormat'), variables('shortName').logAnalytics))]"
+          "value": "[resourceId('Microsoft.OperationalInsights/workspaces', concat(variables('nameFormat'), take(uniqueString(resourceGroup().id), 5), '-', variables('shortName').logAnalytics))]"
         },
         "workspaceName": {
           "type": "string",
-          "value": "[concat(variables('nameFormat'), variables('shortName').logAnalytics)]"
+          "value": "[concat(variables('nameFormat'), take(uniqueString(resourceGroup().id), 5), '-', variables('shortName').logAnalytics)]"
         }
       }
     },
