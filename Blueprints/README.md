@@ -32,9 +32,11 @@
 - Centralize Activity Logging to Platform-Management Workspace
 - Allowed Locations for Resources (East US 2/Central US)
 - Allowed Locations for Resource Groups (East US 2/Central US)
-- Audit VM's with Pending Reboot
+- Audit Virtual Machines with Pending Reboot
 - Enable Azure Security Center (Standard/Free) and Centralize to Platform-Management Workspace
 - Enable Azure Security Policy
+- Deploy Network Watcher for New Networks
+- Audit IP Forwarding on Virtual Machines
 - Audit Service Endpoints for Resources:
     - Azure Container Registry
     - App Service
