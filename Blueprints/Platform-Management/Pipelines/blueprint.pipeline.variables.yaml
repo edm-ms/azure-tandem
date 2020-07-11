@@ -1,5 +1,5 @@
 variables:
-  blueprintName: platform-management
+  blueprintName: Platform-Management
   poolName: Hosted VS2017
   serviceConnection: <yourConnectionName>
   artifactName: Artifacts

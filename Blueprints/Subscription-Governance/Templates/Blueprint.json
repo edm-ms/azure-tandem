@@ -51,7 +51,7 @@
           "Application Name": "Subscription-Governance",
           "Application Owner": "ccoe",
           "Business Criticality": "Tier2",
-          "Contact Email": "[parameters('subAlertEmail')]",
+          "Contact Email": "platformops@contoso.com",
           "Cost Center": "1122334455",
           "Data Classification": "Restricted"
         }
