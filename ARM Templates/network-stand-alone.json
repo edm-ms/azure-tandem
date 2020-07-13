@@ -28,23 +28,11 @@
         "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]",
         "regionName": "[replace(replace(replace(replace(replace(variables('location'),'north','n'), 'east', 'e'),'south', 's'),'west', 'w'),'central', 'c')]",
         "subnetMask": "[replace(replace(replace(parameters('firstSubnetSize'),'Small','3'), 'Medium', '2'),'Large', '1')]",
-        "appPurpose": "[toLower(parameters('appName'))]",
-        "nameFormat": "[concat(variables('regionName'), '-', parameters('environment'), '-', variables('appPurpose'), '-')]",
-        "shortName": {
-            "keyVault": "kv",
-            "logAnalytics": "law",
-            "azureFirewall": "azfw",
-            "networkSecurityGroup": "nsg",
-            "azureFrontDoor": "afd",
-            "publicIP": "pip",
-            "managedIdentity": "mi",
-            "sqlDB": "sql",
-            "sqlMI": "sqlmi"
-            },
-      "vnetParse": "[split(parameters('vnetCidr'), '/')]",
-      "firstSubnet": "[concat(variables('vnetParse')[0], '/', add(int(variables('vnetParse')[1]), int(variables('subnetMask'))))]",
-      "vnetName": "[concat(variables('regionName'), '-', parameters('environment'), '-', variables('appPurpose'), '-vnet-', variables('vnetParse')[0], '_', variables('vnetParse')[1])]",
-      "subName": "[concat(variables('regionName'), '-', parameters('environment'), '-', variables('appPurpose'), '-sub-', variables('vnetParse')[0], '_', add(int(variables('vnetParse')[1]), int(variables('subnetMask'))))]"
+        "appName": "[replace(toLower(parameters('appName')), ' ', '')]",
+        "vnetParse": "[split(parameters('vnetCidr'), '/')]",
+        "firstSubnet": "[concat(variables('vnetParse')[0], '/', add(int(variables('vnetParse')[1]), int(variables('subnetMask'))))]",
+        "vnetName": "[concat(parameters('environment'), '-', variables('regionName'), '-', variables('appName'), '-vnet-', variables('vnetParse')[0], '_', variables('vnetParse')[1])]",
+        "subName": "[concat(parameters('environment'), '-', variables('regionName'), '-', variables('appName'), '-sub-', variables('vnetParse')[0], '_', add(int(variables('vnetParse')[1]), int(variables('subnetMask'))))]"
     },
     "resources": [
         {
@@ -53,12 +41,7 @@
         "apiVersion": "2019-04-01",
         "location": "[variables('location')]",
         "comments": "VNet and Subnet loop to build networks",
-        "tags": {
-            "Blueprint": "network",
-            "Purpose": "[variables('appPurpose')]",
-            "Environment": "[parameters('environment')]",
-            "Location": "[variables('location')]"
-        },
+        "tags": {},
         "properties": {
             "addressSpace": {
             "addressPrefixes": [

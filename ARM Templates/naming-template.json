@@ -1,0 +1,80 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environment": {
+            "type": "string",
+            "allowedValues": [ "prd", "npd", "sbx" ]
+        },
+        "appName": {
+            "type": "string",
+            "defaultValue": "plantfloor",
+            "maxLength": 14
+        }
+    },
+    "variables": {
+    "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]",
+    "regionName": "[replace(replace(replace(replace(replace(variables('location'),'north','n'), 'east', 'e'),'south', 's'),'west', 'w'),'central', 'c')]",
+    "appName": "[replace(toLower(parameters('appName')), ' ', '')]",
+    "storageName": "[concat('sa', parameters('environment'), variables('regionName'), variables('appName'), take(uniqueString(resourceGroup().id), 3))]",
+    "nameFormat": "[concat('-', parameters('environment'), '-', variables('regionName'), '-', variables('appName'))]",
+    "shortName": {
+        "appGateway": "agw",
+        "availabilitySet": "as",
+        "azureContainerRegistry": "acr",
+        "azureDatabricks": "adb",
+        "azureDataFactory": "adf",
+        "azureFirewall": "azfw",
+        "azureFrontDoor": "afd",
+        "azureKubernetes": "aks",
+        "azureSynapse": "syn",
+        "cosmosDB": "cosdb",
+        "eventHub": "eh",
+        "eventHubNameSpace": "ehn",
+        "keyVault": "kv",
+        "loadBalancer": "alb",
+        "logAnalytics": "law",
+        "logicApps": "la",
+        "managedDisk": "md",
+        "managedIdentity": "mi",
+        "networkInterface": "nic",
+        "networkSecurityGroup": "nsg",
+        "postgreSQL": "psql",
+        "publicIP": "pip",
+        "recoveryServicesVault": "rsv",
+        "routeTable": "rt",
+        "serviceBus": "sb",
+        "serviceBusQueue": "sbq",
+        "serviceBusTopic": "sbt",
+        "sqlDatabase": "sqldb",
+        "sqlDataWarehouse": "sqldw",
+        "sqlManagedInstance": "sqlmi",
+        "sqlServer": "sql",
+        "streamAnalytics": "astr",
+        "virtualMachine": "vm"
+        }
+    },
+    "resources": [],
+    "outputs": {
+        "storageName": {
+            "type": "string",
+            "value": "[variables('storageName')]"
+        },
+        "keyVaultName": {
+            "type": "string",
+            "value": "[concat(variables('shortName').keyVault, variables('nameFormat'))]"
+        },
+        "firewallName": {
+            "type": "string",
+            "value": "[concat(variables('shortName').azureFirewall, variables('nameFormat'))]"
+        },
+        "sqlMiName01": {
+            "type": "string",
+            "value": "[concat(variables('shortName').sqlManagedInstance, variables('nameFormat'), '01')]"
+        },
+        "sqlMiName02": {
+            "type": "string",
+            "value": "[concat(variables('shortName').sqlManagedInstance, variables('nameFormat'), '02')]"
+        }
+    }
+}

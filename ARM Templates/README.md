@@ -1,42 +1,8 @@
-### Activity Log Template
+### naming-template
 
-> This template creates diagnostic settings and sends Azure Activity Logs to a Log Analytics Workspace.
+> This template can be used as a starting point for building resources with a specific name format. Deploying this template by passing in values will allow you to preview resource names.
 
-- Administrative
-- Security
-- ServiceHealth
-- Alert
-- Recommendation
-- Policy
-- Autoscale
-- ResourceHealth
 ---
-### Subscription Alerts Template
+### network-stand-alone
 
-> This template deploys an Action Group named: ccoe-alerting with the following base set of alerts at an Azure subscription scope.
-
-- IAM Changes
-- New Resource Group Creation
-- NSG Modification
-- VNet Modifcation
-- Public IP Creation
-- Route Table Modification
----
-### Security Center Template
-
-> This template deploys Azure Security Center for all resources below, enables auto-provisioning, and centralizes logging into a specified workspace.
-
-- Virtual Machines
-- App Services
-- SQL Servers
-- SQL Virtual Machines
-- Storage Accounts
-- Azure Kubernetes Service (AKS)
-- Container Registry
-- Key Vaults
----
-### Managed Identity Template
-
-> This template deploys a User Assigned Managed Identity (UAMI) that can be used for deploying resources.
-
-- Managed Identity
+> This template builds a stand-alone VNet with a single subnet of size "small", "medium", or "large". The sizes add 1 to the CIDR. A VNet with the CIDR 10.0.0.0/21 (2046 addresses) would have a large subnet of 10.0.0.0/22 (1022 addresses), a medium subnet of 10.0.0.0/23 (510 addresses), or a small subnet of 10.0.0.0/24 (254 addresses). The subscription ID and CIDR range are delivered as output to be used for a future VNet peering relationship.
