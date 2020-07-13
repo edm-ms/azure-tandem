@@ -36,7 +36,8 @@
 - Enable Azure Security Center (Standard/Free) and Centralize to Platform-Management Workspace
 - Enable Azure Security Policy
 - Deploy Network Watcher for New Networks
-- Audit IP Forwarding on Virtual Machines
+- Deny IP Forwarding on Virtual Machine NIC's
+- Deny 'Basic' VPN Gateway
 - Audit Service Endpoints for Resources:
     - Azure Container Registry
     - App Service
