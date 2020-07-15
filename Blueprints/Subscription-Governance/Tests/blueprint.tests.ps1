@@ -4,7 +4,7 @@ $global:here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $global:here = Join-Path -Path $here -ChildPath ".."
 $global:blueprintFile = "\Templates\Blueprint.json"
 $global:artifactPath = "\Templates\Artifacts"
-$global:allowedWorkspace = "yourLogWorkspaceResourceId"
+$global:allowedWorkspace = "yourLogWorkspaceId"
 
 Describe "Blueprint Tests" -Tags -Unit {
 
