@@ -4,7 +4,7 @@ parameters:
   serviceConnection: $(serviceConnection)
   artifactName: $(artifactName)
   blueprintScope: $(blueprintScope)
-  blueprintTarget: $(blueprintTarget)
+  blueprintTarget: $(blueprintTargetProd)
 
 
 jobs:

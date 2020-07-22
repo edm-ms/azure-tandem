@@ -1,7 +1,8 @@
 variables:
-  blueprintName: Subscription-Governance
+  blueprintName: Platform-Management
   poolName: Hosted VS2017
   serviceConnection: <yourConnectionName>
   artifactName: Artifacts
   blueprintScope: ManagementGroupId
-  blueprintTarget: <yourSuborMgtGroup>
+  blueprintTargetProd: <yourProdSuborMgtGroup>
+  blueprintTargetDev: <yourDevSuborMgtGroup>
