@@ -1,6 +1,6 @@
 ## Purpose
 
-This repo contains pre-built Blueprints and Azure Devops Pipelines to streamline the deployment of a well-governed Azure environment. This repo builds off the work of the [Cloud Adoption Framework](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/) and [Enterprise Scale](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/) architectures.
+This repo contains pre-built Blueprints and Azure DevOps Pipelines to streamline the deployment of a well-governed Azure environment. This repo builds off the work of the [Cloud Adoption Framework](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/) and [Enterprise Scale](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/) architectures.
 
 ---
 
@@ -12,14 +12,14 @@ This repo contains pre-built Blueprints and Azure Devops Pipelines to streamline
 * * * [Platform-Management](#Platform-Management)
 * * * [Subscription-Governance](#Subscription-Governance)
 * * * [New-Project](#New-Project)
-* * [CI/CD Deployment Pipelines](#CI/CD-Deployment-Pipelines)
+* * [CI/CD Deployment Pipelines](#Azure-DevOps)
 * [Getting started](#Getting-Started)
 
 ---
 
 ### Enterprise Scale Scaffolding
 
-The deployment of Enterprise Scale into your environment creates a management group structure and custom policy scoped to the top level management group. A depection of this hierarchy can be found below.
+The deployment of Enterprise Scale into your environment creates a management group structure and custom policy scoped to the top level management group. A depiction of this hierarchy can be found below.
 
 ![Management Group](./Images/mgtgroup.png)
 
@@ -28,7 +28,8 @@ The deployment of Enterprise Scale into your environment creates a management gr
 This repo contains a set of Azure Blueprints that will be provisioned via pipeline and scoped to the top level management group (prod) and the "Sandbox" (dev) management group Enterprise Scale builds.
 
 - #### Platform-Management
-    > This blueprint is used to establish the landing zone for the platform management subscription. It is recommended to set the Blueprint assignment to "read-only" in order to prevent modification of the resources created by this Blueprint.
+    This blueprint is used to establish the landing zone for the platform management subscription. It is recommended to set the Blueprint assignment to "read-only" in order to prevent modification of the resources created by this Blueprint.
+
 - The following items are deployed as part of this Blueprint:
     - User Assigned Managed Identity
     - Storage Account
@@ -37,7 +38,7 @@ This repo contains a set of Azure Blueprints that will be provisioned via pipeli
     - Key Vault
 
 - #### Subscription-Governance
-    > This blueprint is used to establish base governance for an Azure subscription. It is recommended to set the Blueprint assignment to "read-only" in order to prevent modification of the resources and policies created by this Blueprint.
+    This blueprint is used to establish base governance for an Azure subscription. It is recommended to set the Blueprint assignment to "read-only" in order to prevent modification of the resources and policies created by this Blueprint.
 - The following items are deployed as part of this Blueprint:
 
     - Centralize Activity Logging to Platform-Management Workspace
@@ -98,7 +99,7 @@ This repo contains a set of Azure Blueprints that will be provisioned via pipeli
 ---
 
 - #### New-Project
-    > This blueprint is used to establish the landing zone for new projects. It is recommended to set the Blueprint assignment to "read-only" in order to prevent modification of the resources created by this Blueprint.
+    This blueprint is used to establish the landing zone for new projects. It is recommended to set the Blueprint assignment to "read-only" in order to prevent modification of the resources created by this Blueprint.
 - The following items are deployed as part of this Blueprint:
     - Resource Group with Required Tags
         - Application Name
@@ -116,9 +117,9 @@ This repo contains a set of Azure Blueprints that will be provisioned via pipeli
         - SQL DB Contributor
 ---
 
-### CI/CD Deployment Pipelines
+### Azure DevOps
 
-Each Blueprint has a set of Azure DevOps YAML pipelines that can be imported to jump start infrastructure as code deployments. There are a handful of custom Pester tests that run against the Blueprints to highlight how infrastructure deployments can be alligned to defined specifications and test procedures.
+Each Blueprint has a set of Azure DevOps YAML pipelines that can be imported to jump start infrastructure as code deployments. There are a handful of custom Pester tests that run against the Blueprints to highlight how infrastructure deployments can be aligned to defined specifications and test procedures.
 
 ![Pipeline](./Images/pipeline.png)
 
@@ -129,8 +130,8 @@ Each Blueprint has a set of Azure DevOps YAML pipelines that can be imported to 
 
 1. Create a service principal in Azure to be used for pipeline deployments
 1. Assign the service principal to the top level management group with "Contributor" permissions
-1. Create a new Azure Devops (ADO) project.
-    - > If you do not have an existing ADO environment this can be done for free [here](https://azure.microsoft.com/en-us/services/devops/?nav=min).
+1. Create a new Azure DevOps (ADO) project.
+    - > If you do not have an existing ADO environment this can be done for free [here](https://azure.microsoft.com/en-us/services/DevOps/?nav=min).
 1. Import this repo into your new ADO project
 1. Create a service connection in ADO with the service principal created in a prior step
 1. Import the ADO pipelines from each Blueprint pipeline folder
