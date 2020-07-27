@@ -27,7 +27,7 @@ The deployment of Enterprise Scale into your environment creates a management gr
 
 This repo contains a set of Azure Blueprints that will be provisioned via pipeline and scoped to the top level management group (prod) and the "Sandbox" (dev) management group Enterprise Scale builds.
 
-- #### Platform-Management
+- #### 1) Platform-Management
     This blueprint is used to establish the landing zone for the platform management subscription. It is recommended to set the Blueprint assignment to "read-only" in order to prevent modification of the resources created by this Blueprint.
 
 - The following items are deployed as part of this Blueprint:
@@ -37,7 +37,7 @@ This repo contains a set of Azure Blueprints that will be provisioned via pipeli
     - Azure Sentinel
     - Key Vault
 
-- #### Subscription-Governance
+- #### 2) Subscription-Governance
     This blueprint is used to establish base governance for an Azure subscription. It is recommended to set the Blueprint assignment to "read-only" in order to prevent modification of the resources and policies created by this Blueprint.
 - The following items are deployed as part of this Blueprint:
 
@@ -98,7 +98,7 @@ This repo contains a set of Azure Blueprints that will be provisioned via pipeli
         | Standard_E16s_v3 | 16 | 128 | Production |
 ---
 
-- #### New-Project
+- #### 3) New-Project
     This blueprint is used to establish the landing zone for new projects. It is recommended to set the Blueprint assignment to "read-only" in order to prevent modification of the resources created by this Blueprint.
 - The following items are deployed as part of this Blueprint:
     - Resource Group with Required Tags
@@ -126,7 +126,7 @@ Each Blueprint has a set of Azure DevOps YAML pipelines that can be imported to 
 ---
 ### Getting Started
 
-1. [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://ms.portal.azure.com/?feature.customportal=false#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzOps%2Fmain%2Ftemplate%2Fux-foundation.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzOps%2Fmain%2Ftemplate%2Fesux.json) 
+1. Deploy the management group hierarchy [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://ms.portal.azure.com/?feature.customportal=false#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzOps%2Fmain%2Ftemplate%2Fux-foundation.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzOps%2Fmain%2Ftemplate%2Fesux.json) 
 
 1. Create a service principal in Azure to be used for pipeline deployments
 1. Assign the service principal to the top level management group with "Contributor" permissions
