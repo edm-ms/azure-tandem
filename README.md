@@ -45,6 +45,7 @@ This repo contains a set of Azure Blueprints that will be provisioned via pipeli
     - Allowed Locations for Resources (East US 2/Central US)
     - Allowed Locations for Resource Groups (East US 2/Central US)
     - Audit Virtual Machines with Pending Reboot
+    - Audit if budgets do not exist in subscriptions and resource groups
     - Enable Azure Security Center (Standard/Free) and Centralize to Platform-Management Workspace
     - Enable Azure Security Policy
     - Deploy Network Watcher for New Networks
