@@ -1,0 +1,69 @@
+{
+    "properties": {
+      "displayName": "New Project Blueprint",
+      "description": "Deploys resource group with tagging and role assignment.",
+      "targetScope": "subscription",
+      "parameters": {
+        "Environment": {
+          "type": "string",
+          "metadata": {
+            "displayName": "Prod, Non-Prod, Sandbox"
+          },
+          "allowedValues": [
+            "prd",
+            "npd",
+            "sbx"
+          ]
+        },
+        "ApplicationName": {
+            "type": "string"
+          },
+          "ApplicationOwner": {
+            "type": "string"
+          },
+          "ContactEmail": {
+            "type": "string"
+          },
+          "CostCenter": {
+            "type": "string"
+          },
+          "BusinessCriticality": {
+            "type": "string",
+            "allowedValues": [
+              "Tier0",
+              "Tier1",
+              "Tier2",
+              "Tier3"
+            ]
+          },
+          "DataClassification": {
+            "type": "string",
+            "allowedValues": [
+              "Public",
+              "Internal",
+              "Restricted",
+              "Confidential"
+            ]
+          },
+          "RoleID": {
+              "type": "string",
+              "allowedValues": [
+                  "Contributor",
+                  "Virtual Machine Contributor",
+                  "Storage Account Contributor",
+                  "Key Vault Contributor",
+                  "SQL DB Contributor",
+                  "Network Contributor"
+              ]
+          },
+          "UserOrGroup": {
+            "type": "string",
+            "metadata": {
+              "displayName": "[User group or application name] ([User group or application name] : )",
+              "strongType": "PrincipalId"
+            }
+          }
+      },
+      "resourceGroups": {}
+    }
+  }

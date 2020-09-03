@@ -1,0 +1,63 @@
+{
+    "kind": "template",
+    "properties": {
+        "displayName": "Managed Identity for Blueprint Assignment",
+        "description": "A blueprint to deploy",
+        "dependsOn": [],
+        "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "environment": {
+                    "type": "string"
+                },
+                "appName": {
+                    "type": "string"
+                }
+            },
+            "variables": {
+            "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]",
+            "regionName": "[replace(replace(replace(replace(replace(variables('location'),'north','n'), 'east', 'e'),'south', 's'),'west', 'w'),'central', 'c')]",
+            "nameFormat": "[concat(variables('regionName'), '-', parameters('environment'), '-', toLower(parameters('appName')), '-')]",
+            "shortName": {
+                "keyVault": "kv",
+                "logAnalytics": "law",
+                "azureFirewall": "azfw",
+                "networkSecurityGroup": "nsg",
+                "azureFrontDoor": "afd",
+                "publicIP": "pip",
+                "managedIdentity": "mi",
+                "sqlDB": "sql",
+                "sqlMI": "sqlmi"
+                }
+            },
+            "resources": [
+                {
+                    "name": "[concat(variables('nameFormat'), variables('shortName').managedIdentity)]",
+                    "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+                    "apiVersion": "2018-11-30",
+                    "location": "[variables('location')]",
+                    "tags": {
+                        "Blueprint": "Platform-Management"
+                    },
+                    "properties": {}
+                }
+            ],
+            "outputs": {
+                "managedIdentity": {
+                    "type": "string",
+                    "value": "[reference(concat(variables('nameFormat'), variables('shortName').managedIdentity)).principalId]"
+                  }
+            }
+        },
+        "resourceGroup": "Identity-RG",
+        "parameters": {
+            "environment": {
+                "value": "[parameters('environment')]"
+            },
+            "appname": {
+                "value": "platform"
+            }
+        }
+    }
+}

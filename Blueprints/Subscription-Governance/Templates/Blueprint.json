@@ -1,0 +1,61 @@
+{
+  "properties": {
+    "displayName": "Subscription Governance",
+    "description": "Deploys and configures Azure infrastructure and policies mapped to defined corporate controls.",
+    "targetScope": "subscription",
+    "parameters": {
+      "ascEmail": {
+        "type": "string",
+        "defaultValue": "infosec-distro@contoso.com",
+        "metadata": {
+          "displayName": "Email for Azure Security Center (ASC) Alerts"
+        }
+      },
+      "ascPricingTier": {
+        "type":"string",
+        "defaultValue": "Free",
+        "allowedValues": [ "Free", "Standard"],
+        "metadata": {
+          "displayName": "Azure Security Center (ASC) Price Tier"
+        }
+      },
+      "subAlertEmail": {
+        "type": "array",
+        "metadata": {
+          "displayName": "Email Addresses for Base Subscription Alerts",
+          "description": "JSON array of email addresses"
+        },
+        "defaultValue": [
+          "platformops@contoso.com", "sre@contoso.com"
+        ],
+        "allowedValues": []
+      },
+      "workspaceId": {
+        "type":"string",
+        "allowedValues": ["yourLogWorkspaceId"],
+        "defaultValues": "yourLogWorkspaceId",
+        "metadata": {
+          "displayName": "Central Log Workspace ID for Platform Logging"
+        }
+      }
+    },
+    "resourceGroups": {
+      "AlertRG": {
+        "name": "subscription-alerts-rg",
+        "location": "eastus2",
+        "metadata": {
+          "displayName": "Alert Resource Group"
+        },
+        "dependsOn": [],
+        "tags": {
+          "Application Name": "Subscription-Governance",
+          "Application Owner": "ccoe",
+          "Business Criticality": "Tier2",
+          "Contact Email": "platformops@contoso.com",
+          "Cost Center": "1122334455",
+          "Data Classification": "Restricted"
+        }
+      }
+    }
+  }
+}

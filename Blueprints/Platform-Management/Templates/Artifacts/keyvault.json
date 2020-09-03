@@ -1,0 +1,121 @@
+{
+  "kind": "template",
+  "properties": {
+    "displayName": "Key Vault",
+    "description": "",
+    "dependsOn": ["log-workspace", "managed-identity"],
+    "template": {
+      "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "environment": {
+          "type": "string"
+        },
+        "appName": {
+          "type": "string"
+        },
+        "platformIdentity": {
+          "type": "string"
+        },
+        "logWorkspace": {
+          "type": "string"
+        }
+      },
+      "variables": {
+        "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]",
+        "regionName": "[replace(replace(replace(replace(replace(variables('location'),'north','n'), 'east', 'e'),'south', 's'),'west', 'w'),'central', 'c')]",
+        "nameFormat": "[concat(variables('regionName'), '-', parameters('environment'), '-', toLower(parameters('appName')), '-')]",
+        "shortName": {
+            "keyVault": "kv",
+            "logAnalytics": "law",
+            "azureFirewall": "azfw",
+            "networkSecurityGroup": "nsg",
+            "azureFrontDoor": "afd",
+            "publicIP": "pip",
+            "managedIdentity": "mi",
+            "sqlDB": "sql",
+            "sqlMI": "sqlmi"
+            }
+        },
+      "resources": [
+        {
+          "type": "Microsoft.KeyVault/vaults",
+          "apiVersion": "2019-09-01",
+          "name": "[concat(variables('nameFormat'), variables('shortName').keyVault)]",
+          "location": "[variables('location')]",
+          "tags": {
+            "Blueprint": "Platform-Management"
+          },
+          "properties": {
+            "enabledForDeployment": true,
+            "enabledForTemplateDeployment": true,
+            "enabledForDiskEncryption": true,
+            "enableSoftDelete": true,
+            "tenantId": "[subscription().tenantId]",
+            "accessPolicies": [
+              {
+                "tenantId": "[subscription().tenantId]",
+                "objectId": "[parameters('platformIdentity')]",
+                "permissions": {
+                  "certificates": [
+                    "All"
+                  ],
+                  "secrets": [
+                    "All"
+                  ],
+                  "keys": [
+                    "All"
+                  ]
+                }
+              }
+            ],
+            "sku": {
+              "name": "standard",
+              "family": "A"
+            }
+          }
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/secrets",
+          "name": "[concat(variables('nameFormat'), variables('shortName').keyVault, '/northstarLogID')]",
+          "apiVersion": "2015-06-01",
+          "dependsOn": [
+            "[concat(variables('nameFormat'), variables('shortName').keyVault)]"
+          ],
+          "properties": {
+            "contentType": "Secret",
+            "value": "[parameters('logWorkspace')]"
+          }
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/secrets",
+          "name": "[concat(variables('nameFormat'), variables('shortName').keyVault, '/platformIdentity')]",
+          "apiVersion": "2015-06-01",
+          "dependsOn": [
+            "[concat(variables('nameFormat'), variables('shortName').keyVault)]"
+          ],
+          "properties": {
+            "contentType": "Secret",
+            "value": "[parameters('platformIdentity')]"
+          }
+        }
+      ],
+      "outputs": {}
+    },
+    "resourceGroup": "Identity-RG",
+    "parameters": {
+      "environment": {
+        "value": "[parameters('environment')]"
+      },
+      "appName": {
+        "value": "platform"
+      },
+      "platformIdentity": {
+        "value": "[artifacts('managed-identity').outputs.managedIdentity]" 
+      },
+      "logWorkspace": {
+        "value": "[artifacts('log-workspace').outputs.workspaceID]"
+      }
+    }
+  }
+}

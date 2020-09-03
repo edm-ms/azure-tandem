@@ -1,0 +1,13 @@
+{
+  "kind": "policyAssignment",
+  "properties": {
+    "displayName": "Cosmos DB should use a virtual network service endpoint",
+    "dependsOn": [],
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/e0a2b1a3-f7f9-4569-807f-2a9edebdf4d9",
+    "parameters": {
+      "effect": {
+        "value": "Audit"
+      }
+    }
+  }
+}

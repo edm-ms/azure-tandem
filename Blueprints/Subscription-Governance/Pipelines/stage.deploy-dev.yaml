@@ -1,0 +1,58 @@
+parameters:
+  blueprintName: $(blueprintName)
+  pool: $(poolName)
+  serviceConnection: $(serviceConnection)
+  artifactName: $(artifactName)
+  blueprintScope: $(blueprintScope)
+  blueprintTarget: $(blueprintTargetDev)
+  blueprintVersion: $(blueprintVersion)
+
+
+jobs:
+  - job: 'Publish_Blueprint'
+    displayName: 'Publish New Blueprint Version'
+    pool:
+      name: $(poolName)
+    workspace:
+      clean: all
+    steps:
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: '${{ parameters.artifactName }}'
+        downloadPath: $(System.ArtifactsDirectory)
+
+    - task: AzurePowerShell@5
+      displayName: Publish ${{ parameters.blueprintName }} Blueprint
+      inputs:
+        azureSubscription: ${{ parameters.serviceConnection }}
+        ScriptType: 'InlineScript'
+        Inline: |
+          Install-Module Az.Blueprint -Force
+          Import-AzBlueprintWithArtifact -Name ${{ parameters.blueprintName }} -${{ parameters.blueprintScope }} ${{ parameters.blueprintTarget }} `
+            -InputPath "$(System.ArtifactsDirectory)/${{ parameters.artifactName }}/Blueprints/${{ parameters.blueprintName }}/Templates" -Force -ErrorAction SilentlyContinue
+
+          $bp = Get-AzBlueprint -Name ${{ parameters.blueprintName }} -${{ parameters.blueprintScope }} ${{ parameters.blueprintTarget }} -ErrorAction SilentlyContinue
+
+          # If blueprint is published increment it, otherwise publish it
+          if ($bp.versions -ne $null) {
+
+              if (($bp.versions).length -eq 1) { 
+                $bpVersion = [decimal]$bp.Versions.Replace(",", ".") + .1
+                } 
+              else { 
+                $bpVersion = [decimal]($bp.versions | Sort-Object)[($bp.Versions).length-1] + .1
+                }
+
+              Publish-AzBlueprint -Blueprint $bp -Version $bpVersion
+
+          }
+          else {
+
+              $bpVersion = .1
+              Publish-AzBlueprint -Blueprint $bp -Version $bpVersion
+
+          }
+
+        azurePowerShellVersion: 'LatestVersion'

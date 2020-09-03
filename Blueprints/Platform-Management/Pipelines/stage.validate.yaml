@@ -1,0 +1,36 @@
+parameters:
+  blueprintName: $(blueprintName)
+  pool: $(poolName)
+  serviceConnection: $(serviceConnection)
+  artifactName: $(artifactName)
+  blueprintScope: $(blueprintScope)
+  blueprintTarget: $(blueprintTargetProd)
+
+
+jobs:
+  - job: 'ValidateModule_Blueprint'
+    displayName: 'Validate Blueprint'
+    pool:
+      name: $(poolName)
+    workspace:
+      clean: all
+    steps:
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: '${{ parameters.artifactName }}'
+        downloadPath: $(System.ArtifactsDirectory)
+
+    - task: AzurePowerShell@5
+      displayName: Validate ${{ parameters.blueprintName }} Blueprint
+      inputs:
+        azureSubscription: ${{ parameters.serviceConnection }}
+        ScriptType: 'InlineScript'
+        Inline: |
+          Install-Module Az.Blueprint -Force
+          Import-AzBlueprintWithArtifact -Name ${{ parameters.blueprintName }} -${{ parameters.blueprintScope }} ${{ parameters.blueprintTarget }} `
+            -InputPath "$(System.ArtifactsDirectory)/${{ parameters.artifactName }}/Blueprints/${{ parameters.blueprintName }}/Templates" `
+            -Force -ErrorAction SilentlyContinue -WhatIf
+
+        azurePowerShellVersion: 'LatestVersion'

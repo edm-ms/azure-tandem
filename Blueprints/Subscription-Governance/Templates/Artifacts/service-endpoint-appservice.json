@@ -1,0 +1,13 @@
+{
+  "kind": "policyAssignment",
+  "properties": {
+    "displayName": "App Service should use a virtual network service endpoint",
+    "dependsOn": [],
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/2d21331d-a4c2-4def-a9ad-ee4e1e023beb",
+    "parameters": {
+      "effect": {
+        "value": "AuditIfNotExists"
+      }
+    }
+  }
+}

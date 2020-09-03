@@ -1,0 +1,13 @@
+{
+    "kind": "policyAssignment",
+    "properties": {
+      "displayName": "This policy ensures that VPN gateways do not use 'basic' SKU.",
+      "dependsOn": [],
+      "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/e345b6c3-24bd-4c93-9bbb-7e5e49a17b78",
+      "parameters": {
+        "effect": {
+          "value": "Audit"
+        }
+      }
+    }
+}

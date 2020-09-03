@@ -1,0 +1,38 @@
+{
+  "properties": {
+    "displayName": "Platform Management Blueprint",
+    "description": "Deploys and configures resources to enable centralized platform management.",
+    "targetScope": "subscription",
+    "parameters": {
+      "environment": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Prod, Non-Prod, Sandbox"
+        },
+        "allowedValues": [
+          "prd",
+          "npd",
+          "sbx"
+        ]
+      }
+    },
+    "resourceGroups": {
+      "Logging-RG": {
+        "name": "platform-logging-rg",
+        "location": "eastus2",
+        "metadata": {
+          "displayName": "Logging Resource Group"
+        },
+        "dependsOn": []
+      },
+      "Identity-RG": {
+        "name": "platform-management-rg",
+        "location": "eastus2",
+        "metadata": {
+          "displayName": "Identity Resource Group"
+        },
+        "dependsOn": []
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "kind": "policyAssignment",
+  "properties": {
+    "displayName": "MariaDB server should use a virtual network service endpoint",
+    "dependsOn": [],
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/dfbd9a64-6114-48de-a47d-90574dc2e489",
+    "parameters": {
+      "effect": {
+        "value": "AuditIfNotExists"
+      }
+    }
+  }
+}

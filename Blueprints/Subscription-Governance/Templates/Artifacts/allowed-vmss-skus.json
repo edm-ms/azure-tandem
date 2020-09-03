@@ -1,0 +1,113 @@
+{
+    "kind": "template",
+    "properties": {
+        "displayName": "Allowed VMSS SKUs",
+        "description": "Allowed list of VM SKU's for use with VM Scale Sets",
+        "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {},
+            "variables": {
+                "policyName": "AllowedVMSS",
+                "policyDisplayName": "Allowed VM SKU's for VM Scale Sets",
+                "policyDescription": "Allowed SKUs for use with VMSS (VM Scale Sets)",
+                "listofAllowedSKUs": [
+                    "Standard_B1ms",
+                    "Standard_F2s_v2",
+                    "Standard_B2s",
+                    "Standard_B2ms",
+                    "Standard_D2s_v4",
+                    "Standard_B4ms",
+                    "Standard_D4s_v4",
+                    "Standard_F8s_v2",
+                    "Standard_B8ms",
+                    "Standard_D8s_v4",
+                    "Standard_E8s_v3",
+                    "Standard_F16s_v2",
+                    "Standard_E16s_v3"
+                ]
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Authorization/policyDefinitions",
+                    "name": "[variables('policyName')]",
+                    "apiVersion": "2019-09-01",
+                    "properties": {
+                        "displayName": "[variables('policyDisplayName')]",
+                        "policyType": "Custom",
+                        "description": "[variables('policyDescription')]",
+                        "metadata": {
+                            "category": "Compute"
+                        },
+                        "mode": "All",
+                        "parameters": {
+                            "listofAllowedSKUs": {
+                                "type": "Array",
+                                "metadata": {
+                                    "displayName": "Allowed Size SKUs",
+                                    "description": "The list of size SKUs that can be specified for virtual machine scale sets.",
+                                    "strongType": "VMSKUs"
+                                }
+                            }
+                        },
+                        "policyRule": {
+                            "if": {
+                                "allOf": [
+                                    {
+                                        "field": "type",
+                                        "equals": "Microsoft.Compute/virtualMachineScaleSets"
+                                    },
+                                    {
+                                        "not": {
+                                            "field": "Microsoft.Compute/VirtualMachineScaleSets/sku.name",
+                                            "in": "[[parameters('listofAllowedSKUs')]"
+                                        }
+                                    }
+                                ]
+
+                            },
+                            "then": {
+                                "effect": "deny"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "assignPolicy",
+                    "type": "Microsoft.Resources/deployments",
+                    "apiVersion": "2019-10-01",
+                    "dependsOn": [ "[variables('policyName')]" ],
+                    "location": "eastus2",
+                    "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                            "contentVersion": "1.0.0.0",
+                            "parameters": {},
+                            "variables": {},
+                            "resources": [
+                                {
+                                    "type": "Microsoft.Authorization/policyAssignments",
+                                    "name": "[variables('policyDisplayName')]",
+                                    "apiVersion": "2019-09-01",
+                                    "properties": {
+                                        "displayName": "[variables('policyName')]",
+                                        "policyDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/policyDefinitions', variables('policyName'))]",
+                                        "parameters": {
+                                            "listofAllowedSKUs": {
+                                                "value": "[variables('listofAllowedSKUs')]"
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
+                            "outputs": {}
+                        }
+                    }
+                }
+            ],
+            "outputs": {}
+},
+        "parameters": {}
+    }
+}

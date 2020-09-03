@@ -1,0 +1,169 @@
+{
+  "kind": "template",
+  "properties": {
+    "displayName": "Deploy Tagging Policy",
+    "description": "Deny resource group creation without tags, and inherit resource tags from resource group.",
+    "dependsOn": [],
+    "template": {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "parameters": {},
+        "variables": {
+            "inheritTag": "/providers/Microsoft.Authorization/policyDefinitions/cd3aa116-8754-49c9-a813-ad46512ece54",
+            "requireTag": "/providers/Microsoft.Authorization/policyDefinitions/96670d01-0a4d-4649-9c89-2d3abc0a5025"
+        },
+        "resources": [
+            {
+                "type": "Microsoft.Authorization/policySetDefinitions",
+                "name": "Required Tags",
+                "apiVersion": "2018-05-01",
+                "properties": {
+                    "displayName": "Corporate Tag Policy",
+                    "description": "This initiative enforces resource group tagging and resource tag inheritence.",
+                    "metadata": {
+                        "category": "Tags"
+                },
+                "parameters": {},
+                "policyDefinitions": [
+                    {
+                        "policyDefinitionId": "[variables('requireTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Application Name"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('requireTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Application Owner"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('requireTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Business Criticality"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('requireTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Contact Email"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('requireTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Cost Center"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('requireTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Data Classification"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('inheritTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Application Name"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('inheritTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Application Owner"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('inheritTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Business Criticality"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('inheritTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Contact Email"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('inheritTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Cost Center"
+                            }
+                        }
+                    },
+                    {
+                        "policyDefinitionId": "[variables('inheritTag')]",
+                        "parameters": {
+                            "tagName": {
+                                "value": "Data Classification"
+                            }
+                        }
+                    }
+                ]
+                }
+            },
+            {
+                "name": "assignTagPolicy",
+                "type": "Microsoft.Resources/deployments",
+                "apiVersion": "2019-10-01",
+                "dependsOn": ["Required Tags"],
+                "location": "eastus2",
+                "properties": {
+                    "mode": "Incremental",
+                    "template": {
+                        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {},
+                        "variables": {},
+                        "resources": [
+                            {
+                                "type": "Microsoft.Authorization/policyAssignments",
+                                "name": "Tag Policy",
+                                "apiVersion": "2019-09-01",
+                                "location": "eastus2",
+                                "properties": {
+                                    "displayName": "Corporate Tag Policy",
+                                    "policyDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/policySetDefinitions','Required Tags')]"
+                                },
+                                "identity": {
+                                    "type": "SystemAssigned"
+                                }
+                            }
+                        ],
+                        "outputs": {}
+                    }
+                }
+            }
+        ],
+        "outputs": {
+            "policyId": {
+                "type": "string",
+                "value": "[resourceId('Microsoft.Authorization/policySetDefinitions','Required Tags')]"
+            }
+        }
+    },
+    "parameters": {}
+  }
+}

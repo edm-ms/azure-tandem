@@ -1,0 +1,84 @@
+{
+    "kind": "template",
+    "properties": {
+        "displayName": "Audit Budgets",
+        "description": "Audit Budgets",
+        "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {},
+            "variables": {
+                "policyName": "AuditBudgets",
+                "policyDisplayName": "Audit if budgets do not exist",
+                "policyDescription": "Find resource groups and subscriptions with no budgets for cost management."
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Authorization/policyDefinitions",
+                    "name": "[variables('policyName')]",
+                    "apiVersion": "2019-09-01",
+                    "properties": {
+                        "displayName": "[variables('policyDisplayName')]",
+                        "policyType": "Custom",
+                        "description": "[variables('policyDescription')]",
+                        "metadata": {
+                            "category": "General"
+                        },
+                        "mode": "All",
+                        "parameters": {},
+                        "policyRule": {
+                            "if": {
+                                "field": "type",
+                                "in": [
+                                    "Microsoft.Resources/subscriptions",
+                                    "Microsoft.Resources/subscriptions/resourceGroups"
+                                ]
+                            },
+                            "then": {
+                                "effect": "auditIfNotExists",
+                                "details": {
+                                    "type": "Microsoft.Consumption/budgets",
+                                    "existenceCondition": {
+                                    "field": "Microsoft.Consumption/budgets/category",
+                                    "exists": "true"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "assignBudgetPolicy",
+                    "type": "Microsoft.Resources/deployments",
+                    "apiVersion": "2019-10-01",
+                    "dependsOn": [ "[variables('policyName')]" ],
+                    "location": "eastus2",
+                    "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                            "contentVersion": "1.0.0.0",
+                            "parameters": {},
+                            "variables": {},
+                            "resources": [
+                                {
+                                    "type": "Microsoft.Authorization/policyAssignments",
+                                    "name": "[variables('policyDisplayName')]",
+                                    "apiVersion": "2019-09-01",
+                                    "properties": {
+                                        "displayName": "[variables('policyName')]",
+                                        "policyDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/policyDefinitions', variables('policyName'))]"
+                                    }
+                                }
+                            ],
+                            "outputs": {}
+                        }
+                    }
+                }
+            ],
+            "outputs": {}
+        },
+        "parameters": {
+        }
+    }
+}

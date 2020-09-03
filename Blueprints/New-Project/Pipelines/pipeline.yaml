@@ -1,0 +1,33 @@
+name: $(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
+
+variables:
+- template: pipeline.variables.yaml
+
+trigger:
+  branches:
+    include:
+      - '*'
+
+  paths:
+    include:
+      - Blueprints/New-Project
+
+stages:
+- stage: Build
+  jobs:
+  - template: stage.build.yaml
+
+- stage: Validate
+  jobs:
+  - template: stage.validate.yaml
+
+- stage: Publish_to_Dev
+  dependsOn: Validate
+  jobs:
+  - template: stage.deploy-dev.yaml
+
+- stage: Publish_to_Prod
+  dependsOn: Publish_to_Dev
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  jobs:
+  - template: stage.deploy-prod.yaml

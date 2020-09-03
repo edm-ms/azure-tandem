@@ -1,0 +1,13 @@
+{
+  "kind": "policyAssignment",
+  "properties": {
+    "displayName": "Service Bus should use a virtual network service endpoint",
+    "dependsOn": [],
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/235359c5-7c52-4b82-9055-01c75cf9f60e",
+    "parameters": {
+      "effect": {
+        "value": "AuditIfNotExists"
+      }
+    }
+  }
+}
