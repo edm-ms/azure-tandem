@@ -24,24 +24,13 @@
       "variables": {
         "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]",
         "regionName": "[replace(replace(replace(replace(replace(variables('location'),'north','n'), 'east', 'e'),'south', 's'),'west', 'w'),'central', 'c')]",
-        "nameFormat": "[concat(variables('regionName'), '-', parameters('environment'), '-', toLower(parameters('appName')), '-')]",
-        "shortName": {
-            "keyVault": "kv",
-            "logAnalytics": "law",
-            "azureFirewall": "azfw",
-            "networkSecurityGroup": "nsg",
-            "azureFrontDoor": "afd",
-            "publicIP": "pip",
-            "managedIdentity": "mi",
-            "sqlDB": "sql",
-            "sqlMI": "sqlmi"
-            }
+        "vaultName": "[concat(variables('regionName'), '-', parameters('environment'), '-', toLower(parameters('appName')), take(uniqueString(resourceGroup().id, subscription().id), 4), '-kv')]"
         },
       "resources": [
         {
           "type": "Microsoft.KeyVault/vaults",
           "apiVersion": "2019-09-01",
-          "name": "[concat(variables('nameFormat'), variables('shortName').keyVault)]",
+          "name": "[variables('vaultName')]",
           "location": "[variables('location')]",
           "tags": {
             "Blueprint": "Platform-Management"
@@ -77,10 +66,10 @@
         },
         {
           "type": "Microsoft.KeyVault/vaults/secrets",
-          "name": "[concat(variables('nameFormat'), variables('shortName').keyVault, '/northstarLogID')]",
+          "name": "[concat(variables('vaultName'), '/platformLogWorkspace')]",
           "apiVersion": "2015-06-01",
           "dependsOn": [
-            "[concat(variables('nameFormat'), variables('shortName').keyVault)]"
+            "[variables('vaultName')]"
           ],
           "properties": {
             "contentType": "Secret",
@@ -89,10 +78,10 @@
         },
         {
           "type": "Microsoft.KeyVault/vaults/secrets",
-          "name": "[concat(variables('nameFormat'), variables('shortName').keyVault, '/platformIdentity')]",
+          "name": "[concat(variables('vaultName'), '/platformIdentity')]",
           "apiVersion": "2015-06-01",
           "dependsOn": [
-            "[concat(variables('nameFormat'), variables('shortName').keyVault)]"
+            "[variables('vaultName')]"
           ],
           "properties": {
             "contentType": "Secret",
@@ -101,7 +90,7 @@
         }
       ],
       "outputs": {}
-    },
+  },
     "resourceGroup": "Identity-RG",
     "parameters": {
       "environment": {
