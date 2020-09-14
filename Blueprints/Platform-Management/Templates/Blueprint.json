@@ -20,6 +20,14 @@
       "Logging-RG": {
         "name": "platform-logging-rg",
         "location": "eastus2",
+        "tags": {
+          "Application Name": "Platform-Management",
+          "Application Owner": "ccoe",
+          "Business Criticality": "Tier2",
+          "Contact Email": "platformops@contoso.com",
+          "Cost Center": "1122334455",
+          "Data Classification": "Restricted"
+        },
         "metadata": {
           "displayName": "Logging Resource Group"
         },
@@ -28,6 +36,14 @@
       "Identity-RG": {
         "name": "platform-management-rg",
         "location": "eastus2",
+        "tags": {
+          "Application Name": "Platform-Management",
+          "Application Owner": "ccoe",
+          "Business Criticality": "Tier2",
+          "Contact Email": "platformops@contoso.com",
+          "Cost Center": "1122334455",
+          "Data Classification": "Restricted"
+        },
         "metadata": {
           "displayName": "Identity Resource Group"
         },
