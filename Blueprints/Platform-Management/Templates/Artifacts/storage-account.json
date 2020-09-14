@@ -56,7 +56,12 @@
                     }
                 }
             ],
-            "outputs": {}
+            "outputs": {
+                "storageAccountKey": {
+                    "type": "string",
+                    "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('storageName')), '2019-04-01').keys[0].value]"
+                }
+          }
         },
         "resourceGroup": "Logging-RG",
         "parameters": {

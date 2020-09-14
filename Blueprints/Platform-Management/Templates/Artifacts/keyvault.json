@@ -3,7 +3,7 @@
   "properties": {
     "displayName": "Key Vault",
     "description": "",
-    "dependsOn": ["log-workspace", "managed-identity"],
+    "dependsOn": ["log-workspace", "managed-identity", "storage-account"],
     "template": {
       "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
       "contentVersion": "1.0.0.0",
@@ -18,6 +18,9 @@
           "type": "string"
         },
         "logWorkspace": {
+          "type": "string"
+        },
+        "storageAccountKey": {
           "type": "string"
         }
       },
@@ -87,6 +90,18 @@
             "contentType": "Secret",
             "value": "[parameters('platformIdentity')]"
           }
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/secrets",
+          "name": "[concat(variables('vaultName'), '/storageAccountKey')]",
+          "apiVersion": "2015-06-01",
+          "dependsOn": [
+            "[variables('vaultName')]"
+          ],
+          "properties": {
+            "contentType": "Secret",
+            "value": "[parameters('storageAccountKey')]"
+          }
         }
       ],
       "outputs": {}
@@ -104,6 +119,9 @@
       },
       "logWorkspace": {
         "value": "[artifacts('log-workspace').outputs.workspaceID]"
+      },
+      "storageAccountKey": {
+        "value": "[artifacts('storage-account').outputs.storageAccountKey]"
       }
     }
   }
