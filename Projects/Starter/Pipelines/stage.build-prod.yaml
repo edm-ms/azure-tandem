@@ -1,0 +1,71 @@
+parameters:
+  pool: $(poolName)
+  serviceConnection: $(serviceConnection)
+  artifactName: $(prodArtifactName)
+  projectFolder: $(projectFolder)
+  subID: $(productionSubID)
+  resourceGroup: $(productionRG)
+  environment: $(productionEnv)
+  location: $(prodLocation)
+
+jobs:
+  - job: 'ARM'
+    displayName: 'ARM Build'
+    pool:
+      name: $(poolName)
+    workspace:
+      clean: all
+    steps:
+
+    - task: RunARMTTKTests@1
+      displayName: 'Validate ARM template with ARM-TTK'
+      inputs:
+        templatelocation: '$(System.DefaultWorkingDirectory)/Projects/${{ parameters.projectFolder }}/Templates/*'
+        resultLocation: '$(System.DefaultWorkingDirectory)'
+
+    - task: AzSKARMTemplateChecker@4
+      displayName: 'Scan ARM template with AzSK'
+      inputs:
+        ARMTemplateFilePath: '$(System.DefaultWorkingDirectory)/Projects/${{ parameters.projectFolder }}/Templates/*'
+        ExcludeFiles: 'azuredeploy.parameters.json'
+      condition: succeededOrFailed()
+
+    - task: ALMMechanics.AzskNUnit.azsk-nunit-task.azsk-nunit-task@3
+      displayName: 'Convert AzSK to NUnit output'
+      condition: succeededOrFailed()
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'NUnit'
+        testResultsFiles: '$(System.DefaultWorkingDirectory)/*.xml'
+      condition: succeededOrFailed()
+        
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'Submit ARM templates in validate mode'
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'Azure'
+        overrideParameters: '-environment ${{ parameters.environment }}'
+        subscriptionId: '${{ parameters.subID }}'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: '${{ parameters.resourceGroup }}'
+        location: '${{ parameters.location }}'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(System.DefaultWorkingDirectory)/Projects/${{ parameters.projectFolder }}/Templates/azuredeploy.json'
+        csmParametersFile: '$(System.DefaultWorkingDirectory)/Projects/${{ parameters.projectFolder }}/Templates/azuredeploy.parameters.json'
+        deploymentMode: 'Validation'
+
+    - task: CopyFiles@2
+      displayName: Copy ${{ parameters.projectFolder }} Files
+      inputs:
+        Contents: |
+          Projects/${{ parameters.projectFolder }}/Templates/**
+
+        targetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifacts'
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: '${{ parameters.artifactName }}'
+        publishLocation: 'Container'

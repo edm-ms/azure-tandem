@@ -1,0 +1,49 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environment": {
+            "type": "string",
+            "allowedValues": [ "prd", "npd", "sbx" ]
+        },
+        "appName": {
+            "type": "string",
+            "maxLength": 12
+        }
+    },
+    "variables": {
+        "location": "[replace(replace(replace(parameters('environment'), 'prd', 'eastus2'), 'npd', 'centralus'), 'sbx', 'centralus')]",
+        "regionName": "[replace(replace(replace(replace(replace(variables('location'),'north','n'), 'east', 'e'),'south', 's'),'west', 'w'),'central', 'c')]",
+        "appName": "[replace(toLower(parameters('appName')), ' ', '')]",
+        "storageName": "[concat('sa', parameters('environment'), variables('regionName'), variables('appName'), take(uniqueString(resourceGroup().id), 5))]"
+    },
+    "resources": [
+        {
+            "name": "[variables('storageName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-04-01",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "supportsHttpsTrafficOnly": true,
+                "deleteRetentionPolicy": {
+                    "enabled": true,
+                    "day": 7
+                },
+                "networkAcls": {
+                    "ipRules": [
+                        {
+                            "value": "73.102.9.215",
+                            "action": "Allow"
+                        }
+                    ],
+                    "defaultAction": "Deny"
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

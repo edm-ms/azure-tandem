@@ -1,0 +1,16 @@
+variables:
+  projectFolder: Starter
+  poolName: Hosted VS2017
+  serviceConnection: <yourConnectionName>
+
+  productionSubID: <yourProdSubID>
+  prodArtifactName: ProdArtifacts
+  productionRG: <yourProdRGName>
+  productionEnv: prd
+  prodLocation: eastus2
+
+  devSubID: <yourDevSubID>
+  devArtifactName: DevArtifacts
+  devRG: <yourDevRGName>
+  devEnv: sbx
+  devLocation: centralus
