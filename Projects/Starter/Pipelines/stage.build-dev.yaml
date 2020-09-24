@@ -11,12 +11,15 @@ parameters:
 jobs:
   - job: 'ARM'
     displayName: 'ARM Build'
+    variables:
+      - name: FailTaskIfNoControlsScanned
+        value: false 
     pool:
       name: $(poolName)
     workspace:
       clean: all
     steps:
-
+  
     - task: RunARMTTKTests@1
       displayName: 'Validate ARM template with ARM-TTK'
       inputs:
