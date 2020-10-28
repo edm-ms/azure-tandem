@@ -1,0 +1,9 @@
+{
+  "kind": "policyAssignment",
+  "properties": {
+    "displayName": "This policy enforces network control on PaaS services.",
+    "dependsOn": [],
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/<yourTopMgtGroup>/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints",
+    "parameters": {}
+  }
+}
