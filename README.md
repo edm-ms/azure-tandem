@@ -51,18 +51,20 @@ This repo contains a set of Azure Blueprints that will be provisioned via pipeli
     - Deploy Network Watcher for New Networks
     - Deny IP Forwarding on Virtual Machine NIC's
     - Deny 'Basic' VPN Gateway
-    - Audit Service Endpoints for Resources:
-        - Azure Container Registry
-        - App Service
+    - Deny Creation of PaaS Services Without Network ACL:
+        - Azure Kubernetes Service
         - CosmosDB
-        - Event Hub
         - Key Vault
         - MariaDB
         - MySQL
-        - PostgreSQL
-        - Service Bus
+        - PostgreSql
         - SQL DB
-        - Storage Accounts
+        - Azure Storage
+    - Audit Service Endpoints for Resources:
+        - Azure Container Registry
+        - App Service
+        - Event Hub
+        - Service Bus
     - Enable Base Set of Azure Subscription Alerting
         - IAM Changes
         - NSG Modification

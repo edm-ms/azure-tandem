@@ -8,7 +8,7 @@
             "contentVersion": "1.0.0.0",
             "parameters": {},
             "variables": {
-                "policyName": "AllowedVMSS",
+                "policyName": "Allowed Virtual Machine Scale-Set 'VMSS' SKU's",
                 "policyDisplayName": "Allowed VM SKU's for VM Scale Sets",
                 "policyDescription": "Allowed SKUs for use with VMSS (VM Scale Sets)",
                 "listofAllowedSKUs": [

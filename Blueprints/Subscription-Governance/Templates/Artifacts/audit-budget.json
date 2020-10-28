@@ -8,7 +8,7 @@
             "contentVersion": "1.0.0.0",
             "parameters": {},
             "variables": {
-                "policyName": "AuditBudgets",
+                "policyName": "Audit resource group and subscriptions for budget alerts.",
                 "policyDisplayName": "Audit if budgets do not exist",
                 "policyDescription": "Find resource groups and subscriptions with no budgets for cost management."
             },
