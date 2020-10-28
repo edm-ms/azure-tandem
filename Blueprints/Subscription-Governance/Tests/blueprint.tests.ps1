@@ -188,7 +188,7 @@ Describe "Blueprint Tests" -Tags -Unit {
             $artifactFileList = Get-ChildItem (Join-Path -Path "$here" -ChildPath "$artifactPath")
 
             $vmSKUpolicy = "/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3"
-            $vmssSKUpolicyName = "AllowedVMSS"
+            $vmssSKUpolicyName = "Allowed Virtual Machine Scale-Set 'VMSS' SKU's"
 
             foreach ($file in $artifactFileList) {
             
