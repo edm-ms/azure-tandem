@@ -53,12 +53,13 @@ Describe "Blueprint Tests" -Tags -Unit {
                     $blueprintParameters = ($item.properties.parameters | Get-Member -MemberType NoteProperty).name | Sort-Object
                     $templateParameters = ($item.properties.template.parameters | Get-Member -MemberType NoteProperty).name | Sort-Object
 
+                    [System.Collections.ArrayList]$ArrayList = $templateParameters
+                    $ArrayList.Remove("startDate")
+                    $templateParameters = $ArrayList
+
                     $templateParameters | Should -Be $blueprintParameters
                 }
             }
         }
     }
 }
-
-# Extract templates from blueprint for validation
-#$item.properties.template | ConvertTo-Json -Depth 50 | Out-File $templateName

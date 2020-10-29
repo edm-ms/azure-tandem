@@ -1,0 +1,119 @@
+{
+    "kind": "template",
+    "properties": {
+        "displayName": "Budget Alert",
+        "description": "",
+        "dependsOn": ["resource-group"],
+        "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+              "ApplicationName": {
+                "type": "string",
+                "defaultValue": "MyBudget",
+                "metadata": {
+                  "description": "Name of the Budget. It should be unique within a resource group."
+                }
+              },
+              "Budget": {
+                "type": "string",
+                "defaultValue": "1000",
+                "metadata": {
+                  "description": "The total amount of cost or usage to track with the budget"
+                }
+              },
+              "startDate": {
+                "type": "string",
+                "defaultValue": "[utcNow('yyyy-MM-dd')]",
+                "metadata": {
+                  "description": "The start date must be first of the month in YYYY-MM-DD format. Future start date should not be more than three months. Past start date should be selected within the timegrain preiod."
+                }
+              },
+              "contactEmail": {
+                "type": "string",
+                "metadata": {
+                  "description": "The list of email addresses to send the budget notification to when the threshold is exceeded."
+                }
+              },
+              "resourceGroupName": {
+                "type": "string",
+                "metadata": {
+                  "description": "The set of values for the first filter"
+                }
+              }
+            },
+            "variables": {
+              "dateSplit": "[split(parameters('startDate'), '-')]",
+              "year": "[variables('dateSplit')[0]]",
+              "month": "[variables('dateSplit')[1]]",
+              "startDate": "[concat(variables('year'), '-', variables('month'), '-', '01')]",
+              "email": [ "[parameters('contactEmail')]" ],
+              "resourceGroup": [ "[parameters('resourceGroupName')]" ]
+            },
+            "resources": [
+
+              {
+                "name": "assignBudget",
+                "type": "Microsoft.Resources/deployments",
+                "apiVersion": "2019-10-01",
+                "resourceGroup": "[parameters('resourceGroupName')]",
+                "properties": {
+                    "mode": "Incremental",
+                    "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                      {
+                        "type": "Microsoft.Consumption/budgets",
+                        "apiVersion": "2019-10-01",
+                        "name": "[parameters('ApplicationName')]",
+                        "properties": {
+                          "timePeriod": {
+                            "startDate": "[variables('startDate')]"
+                          },
+                          "timeGrain": "Monthly",
+                          "amount": "[parameters('Budget')]",
+                          "category": "Cost",
+                          "notifications": {
+                            "NotificationForExceededBudget1": {
+                              "enabled": true,
+                              "operator": "GreaterThan",
+                              "threshold": 80,
+                              "contactEmails": "[variables('email')]"
+                            }
+                          },
+                          "filter": {
+                            "and": [
+                              {
+                                "dimensions": {
+                                  "name": "ResourceGroupName",
+                                  "operator": "In",
+                                  "values": "[variables('resourceGroup')]"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+            }
+            ]
+          },
+        "parameters": {
+            "resourceGroupName": {
+                "value": "[artifacts('resource-group').outputs.resourceGroupName]"
+            },
+            "ApplicationName": {
+                "value": "[parameters('ApplicationName')]"
+            },
+            "ContactEmail": {
+                "value": "[parameters('ContactEmail')]"
+            },
+            "Budget": {
+                "value": "[parameters('Budget')]"
+            }
+        }
+    }
+}

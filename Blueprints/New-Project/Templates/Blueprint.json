@@ -15,6 +15,13 @@
             "sbx"
           ]
         },
+        "Budget": {
+          "type": "string",
+          "metadata": {
+            "displayName": "The total amount of cost to track and alert on."
+          },
+          "defaultValue": "1000"
+        },
         "ApplicationName": {
             "type": "string"
           },
