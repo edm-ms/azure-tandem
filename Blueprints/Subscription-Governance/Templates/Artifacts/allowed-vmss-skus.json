@@ -8,8 +8,8 @@
             "contentVersion": "1.0.0.0",
             "parameters": {},
             "variables": {
-                "policyName": "Allowed Virtual Machine Scale-Set 'VMSS' SKU's",
-                "policyDisplayName": "Allowed VM SKU's for VM Scale Sets",
+                "policyName": "Allowed-VMSS-SKUs",
+                "policyDisplayName": "Allowed VM SKUs for VM Scale Sets",
                 "policyDescription": "Allowed SKUs for use with VMSS (VM Scale Sets)",
                 "listofAllowedSKUs": [
                     "Standard_B1ms",
@@ -91,7 +91,7 @@
                                     "name": "[variables('policyDisplayName')]",
                                     "apiVersion": "2019-09-01",
                                     "properties": {
-                                        "displayName": "[variables('policyName')]",
+                                        "displayName": "[variables('policyDisplayName')]",
                                         "policyDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/policyDefinitions', variables('policyName'))]",
                                         "parameters": {
                                             "listofAllowedSKUs": {

@@ -8,7 +8,7 @@
             "contentVersion": "1.0.0.0",
             "parameters": {},
             "variables": {
-                "policyName": "Audit resource group and subscriptions for budget alerts.",
+                "policyName": "Audit-Budget-Alerts",
                 "policyDisplayName": "Audit if budgets do not exist",
                 "policyDescription": "Find resource groups and subscriptions with no budgets for cost management."
             },
@@ -66,7 +66,7 @@
                                     "name": "[variables('policyDisplayName')]",
                                     "apiVersion": "2019-09-01",
                                     "properties": {
-                                        "displayName": "[variables('policyName')]",
+                                        "displayName": "[variables('policyDisplayName')]",
                                         "policyDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/policyDefinitions', variables('policyName'))]"
                                     }
                                 }
