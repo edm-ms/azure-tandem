@@ -1,0 +1,13 @@
+{
+  "kind": "policyAssignment",
+  "properties": {
+    "displayName": "Audit Windows VMs with a pending reboot",
+    "dependsOn": [],
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/4221adbc-5c0f-474f-88b7-037a99e6114c",
+    "parameters": {
+      "IncludeArcMachines": {
+        "value": "false"
+      }
+    }
+  }
+}
