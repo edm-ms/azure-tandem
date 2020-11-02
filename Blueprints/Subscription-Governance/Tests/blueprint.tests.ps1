@@ -119,6 +119,29 @@ Describe "Blueprint Tests" -Tags -Unit {
             If ($defFound -ne $true) {  $false | Should -Be $true }
         }
 
+        It "Should match VM and VM Scale Set (VMSS) allowed SKUs" {
+            
+            # List all files in artifact directory
+            $artifactFileList = Get-ChildItem (Join-Path -Path "$here" -ChildPath "$artifactPath")
+
+            $vmSKUpolicy = "/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3"
+            $vmssSKUpolicyName = "Allowed-VMSS-SKUs"
+
+            foreach ($file in $artifactFileList) {
+            
+                $currentFile = Get-Content $file.FullName | ConvertFrom-Json
+
+                If ($currentFile.properties.policyDefinitionId -eq $vmSKUpolicy) {
+                    $vmSKUs = $currentFile.properties.parameters.listofAllowedSKUs.value | Sort-Object
+                 }
+                 If ($currentFile.properties.template.variables.policyName -eq $vmssSKUpolicyName) {
+                    $vmssSKUs = $currentFile.properties.template.variables.listofAllowedSKUs | Sort-Object
+                 }
+            }
+
+            $vmSKUs | Should -Be $vmssSKUs
+        }
+
         It "Should contain allowed resource locations" {
             
             # List all files in artifact directory
@@ -180,31 +203,39 @@ Describe "Blueprint Tests" -Tags -Unit {
             $resourceLocations | Should -Be $resourceGroupLocations
         }
 
-
-
-        It "Should match VM and VM Scale Set (VMSS) allowed SKUs" {
+        It "Should match required tag and inherited tag" {
             
             # List all files in artifact directory
             $artifactFileList = Get-ChildItem (Join-Path -Path "$here" -ChildPath "$artifactPath")
 
-            $vmSKUpolicy = "/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3"
-            $vmssSKUpolicyName = "Allowed-VMSS-SKUs"
+            $requiredTags = @()
+            $inheritedTags = @()
 
             foreach ($file in $artifactFileList) {
             
                 $currentFile = Get-Content $file.FullName | ConvertFrom-Json
 
-                If ($currentFile.properties.policyDefinitionId -eq $vmSKUpolicy) {
-                    $vmSKUs = $currentFile.properties.parameters.listofAllowedSKUs.value | Sort-Object
-                 }
-                 If ($currentFile.properties.template.variables.policyName -eq $vmssSKUpolicyName) {
-                    $vmssSKUs = $currentFile.properties.template.variables.listofAllowedSKUs | Sort-Object
-                 }
+                if ($currentFile.properties.displayName -eq "Deploy Tagging Policy") {
+
+                    $policies = $currentFile.properties.template.resources.properties.policyDefinitions
+
+                    foreach ($policy in $policies) { 
+                        if ($policy.policyDefinitionId -eq "[variables('requireTag')]") { 
+                            $requiredTags += $policy.parameters.tagName.value 
+                        }
+                        if ($policy.policyDefinitionId -eq "[variables('inheritTag')]") { 
+                            $inheritedTags += $policy.parameters.tagName.value 
+                        }
+                    }
+
+                    $requiredTags = $requiredTags | Sort-Object
+                    $inheritedTags = $inheritedTags | Sort-Object
+
+                }
             }
 
-            $vmSKUs | Should -Be $vmssSKUs
+            $requiredTags | Should -Be $inheritedTags
         }
-
 
         It "Should match defined log workspace ID" {
             
@@ -218,8 +249,3 @@ Describe "Blueprint Tests" -Tags -Unit {
         }
     }
 }
-
-
-
-
-
