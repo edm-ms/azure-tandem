@@ -29,6 +29,8 @@
             "kind": "StorageV2",
             "properties": {
                 "supportsHttpsTrafficOnly": true,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
                 "deleteRetentionPolicy": {
                     "enabled": true,
                     "day": 7
