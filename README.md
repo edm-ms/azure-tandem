@@ -118,6 +118,8 @@ This repo contains a set of Azure Blueprints that will be provisioned via pipeli
         - Network Contributor
         - Key Vault Contributor
         - SQL DB Contributor
+    - Budget Alert to Contact Email of Resource Group
+        - Alerts at 80% of monthly spend
 ---
 
 ### Azure DevOps
