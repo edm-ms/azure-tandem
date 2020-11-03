@@ -1,0 +1,23 @@
+name: $(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
+
+variables:
+- template: pipeline.variables.yaml
+
+trigger:
+  branches:
+    include:
+      - '*'
+
+  paths:
+    include:
+      - Projects/Audit-Blueprint
+
+stages:
+- stage: Build_and_Validate
+  jobs:
+  - template: stage.build.yaml
+
+- stage: Deploy
+  dependsOn: Build_and_Validate
+  jobs:
+  - template: stage.deploy.yaml

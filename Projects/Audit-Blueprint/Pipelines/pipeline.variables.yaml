@@ -1,0 +1,8 @@
+variables:
+  projectFolder: Audit-Blueprint
+  poolName: Hosted VS2017
+  serviceConnection: <yourConnectionName>
+
+  artifactName: Artifacts
+  mgtGroup: <yourMgtGroupName>
+  location: eastus2
