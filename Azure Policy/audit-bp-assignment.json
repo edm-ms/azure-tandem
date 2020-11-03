@@ -1,27 +1,27 @@
 {
-    "mode": "All",
-    "policyRule": {
-      "if": {
-        "field": "type",
-        "equals": "Microsoft.Resources/subscriptions"
-      },
-      "then": {
-        "effect": "auditIfNotExists",
-        "details": {
-          "type": "Microsoft.Blueprint/blueprintAssignments",
-          "name": "[parameters('assignmentName')]",
-          "existenceScope": "subscription"
-        }
-      }
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "field": "type",
+      "equals": "Microsoft.Resources/subscriptions"
     },
-    "parameters": {
-      "assignmentName": {
-        "type": "String",
-        "metadata": {
-          "displayName": "assignmentName",
-          "description": null
-        },
-        "defaultValue": "subscription-governance"
+    "then": {
+      "effect": "auditIfNotExists",
+      "details": {
+        "type": "Microsoft.Blueprint/blueprintAssignments",
+        "name": "[parameters('assignmentName')]",
+        "existenceScope": "subscription"
       }
     }
+  },
+  "parameters": {
+    "assignmentName": {
+      "type": "String",
+      "metadata": {
+        "displayName": "assignmentName",
+        "description": null
+      },
+      "defaultValue": "Assignment-Subscription-Governance"
+    }
   }
+}
