@@ -1,0 +1,55 @@
+parameters:
+  pool: $(poolName)
+  serviceConnection: $(serviceConnection)
+  artifactName: $(artifactName)
+  projectFolder: $(projectFolder)
+  environment: $(mgtGroup)
+  location: $(location)
+
+jobs:
+  - job: 'ARM'
+    displayName: 'ARM Build'
+    pool:
+      name: $(poolName)
+    workspace:
+      clean: all
+    steps:
+
+    - task: RunARMTTKTests@1
+      displayName: 'Validate ARM template with ARM-TTK'
+      inputs:
+        templatelocation: '$(System.DefaultWorkingDirectory)/Projects/${{ parameters.projectFolder }}/Templates/*'
+        resultLocation: '$(System.DefaultWorkingDirectory)'
+        skipTests: 'Resources Should Have Location'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'NUnit'
+        testResultsFiles: '$(System.DefaultWorkingDirectory)/*.xml'
+      condition: succeededOrFailed()
+        
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'Submit ARM templates in validate mode'
+      inputs:
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '${{ parameters.serviceConnection }}'
+        overrideParameters: '-targetMG ${{ parameters.environment }}'
+        location: '${{ parameters.location }}'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(System.DefaultWorkingDirectory)/Projects/${{ parameters.projectFolder }}/Templates/azuredeploy.json'
+        csmParametersFile: '$(System.DefaultWorkingDirectory)/Projects/${{ parameters.projectFolder }}/Templates/azuredeploy.parameters.json'
+        deploymentMode: 'Validation'
+
+    - task: CopyFiles@2
+      displayName: Copy ${{ parameters.projectFolder }} Files
+      inputs:
+        Contents: |
+          Projects/${{ parameters.projectFolder }}/Templates/**
+        targetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifacts'
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: '${{ parameters.artifactName }}'
+        publishLocation: 'Container'

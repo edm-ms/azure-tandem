@@ -1,0 +1,34 @@
+parameters:
+  pool: $(poolName)
+  serviceConnection: $(serviceConnection)
+  artifactName: $(artifactName)
+  projectFolder: $(projectFolder)
+  environment: $(mgtGroup)
+  location: $(location)
+
+jobs:
+  - job: 'ARM'
+    displayName: 'ARM Template Job'
+    pool:
+      name: $(poolName)
+    workspace:
+      clean: all
+    steps:
+  
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: '${{ parameters.artifactName }}'
+        downloadPath: $(System.ArtifactsDirectory)
+
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '${{ parameters.serviceConnection }}'
+        overrideParameters: '-targetMG ${{ parameters.environment }}'
+        location: '${{ parameters.location }}'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(System.ArtifactsDirectory)/${{ parameters.artifactName }}/Projects/${{ parameters.projectFolder }}/Templates/azuredeploy.json'
+        csmParametersFile: '$(System.ArtifactsDirectory)/${{ parameters.artifactName }}/Projects/${{ parameters.projectFolder }}/Templates/azuredeploy.parameters.json'
+        deploymentMode: 'Incremental'
