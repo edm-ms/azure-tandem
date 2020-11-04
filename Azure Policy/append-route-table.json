@@ -1,0 +1,68 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "anyOf": [
+        {
+          "allOf": [
+            {
+              "field": "type",
+              "equals": "Microsoft.Network/virtualNetworks"
+            },
+            {
+              "not": {
+                "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable.id",
+                "equals": "[parameters('routeTable')[field('location')].id]"
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "field": "type",
+              "equals": "Microsoft.Network/virtualNetworks/subnets"
+            },
+            {
+              "not": {
+                "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                "equals": "[parameters('routeTable')[field('location')].id]"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "then": {
+      "effect": "append",
+      "details": [
+        {
+          "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable",
+          "value": {
+            "id": "[parameters('routeTable')[field('location')].id]"
+          }
+        }
+      ]
+    }
+  },
+  "parameters": {
+    "routeTable": {
+      "type": "Object",
+      "metadata": {
+        "displayName": "Route table Id",
+        "description": "Resource Id of the route table. example:/subscriptions/yourSubscription/resourceGroups/yourResourceGroup/providers/Microsoft.Network/routeTables/aTable"
+      },
+      "defaultValue": {
+          "eastus2": {
+            "id": "/subscriptions/yourSubscription/resourceGroups/yourResourceGroup/providers/Microsoft.Network/routeTables/aTable"
+          },
+          "centralus": {
+            "id": "/subscriptions/yourSubscription/resourceGroups/yourResourceGroup/providers/Microsoft.Network/routeTables/aTable"
+          },
+          "disabled": {
+            "id": ""
+          }
+      }
+    }
+  }
+}
