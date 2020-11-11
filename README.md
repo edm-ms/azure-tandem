@@ -137,7 +137,7 @@ Each Blueprint has a set of Azure DevOps YAML pipelines that can be imported to 
 1. Assign the service principal to the top level management group -created in prior step- with "Contributor" permissions
 1. Create a new Azure DevOps (ADO) project
     - > If you do not have an existing ADO environment this can be done for free [here](https://azure.microsoft.com/en-us/services/DevOps/?nav=min).
-1. Apply Audit policy to top management group [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://ms.portal.azure.com/?feature.customportal=false#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fedm-ms%2Fazure-tandem%2Fmain%2FARM%20Templates%2Faudit-bp-governance.json) 
+1. Apply Audit policy to top management group [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://ms.portal.azure.com/?feature.customportal=false#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fedm-ms%2Fazure-tandem%2Fmain%2FARM-Templates%2Faudit-bp-governance.json) 
 1. Import this repo into your new ADO project
 1. In your ADO project settings, create a service connection with the service principal created in a prior step
 1. Import the ADO pipelines from each Blueprint pipeline folder
