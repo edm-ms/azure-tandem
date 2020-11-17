@@ -47,7 +47,7 @@ jobs:
       displayName: 'Submit ARM templates in validate mode'
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'Azure'
+        azureResourceManagerConnection: '${{ parameters.serviceConnection }}'
         overrideParameters: '-environment ${{ parameters.environment }}'
         subscriptionId: '${{ parameters.subID }}'
         action: 'Create Or Update Resource Group'
