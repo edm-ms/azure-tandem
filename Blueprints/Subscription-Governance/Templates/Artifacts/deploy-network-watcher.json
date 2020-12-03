@@ -1,9 +1,51 @@
 {
-  "kind": "policyAssignment",
+  "kind": "template",
   "properties": {
-    "displayName": "Deploy network watcher when virtual networks are created",
-    "dependsOn": [],
-    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/a9b99dd8-06c5-4317-8629-9d86a3c6e7d9",
-    "parameters": {}
+      "displayName": "Deploy network watcher",
+      "description": "Deploy network watcher",
+      "template": {
+          "$schema":  "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "functions": [],
+          "variables": {
+              "policyName": "/providers/Microsoft.Authorization/policyDefinitions/a9b99dd8-06c5-4317-8629-9d86a3c6e7d9",
+              "policyAssignmentName": "[concat('Deploy-NetworkWatcher-', subscription().subscriptionId)]",
+              "roleName": "[guid(concat(subscription().id, variables('policyName')))]"
+          },
+          "resources": [
+              {
+                  "type": "Microsoft.Authorization/policyAssignments",
+                  "apiVersion": "2018-05-01",
+                  "name": "[variables('policyAssignmentName')]",
+                  "location": "eastus",
+                  "identity": {
+                      "type": "SystemAssigned"
+                  },
+                  "properties": {
+                      "description": "Deploy-Network-Watcher",
+                      "displayName": "Deploy network watcher when virtual networks are created",
+                      "policyDefinitionId": "[variables('policyName')]",
+                      "scope": "[subscription().id]",
+                      "parameters": {}
+                  }
+              },
+              {
+                  "type": "Microsoft.Authorization/roleAssignments",
+                  "apiVersion": "2019-04-01-preview",
+                  "name": "[variables('roleName')]",
+                  "dependsOn": [
+                      "[variables('policyAssignmentName')]"
+                  ],
+                  "properties": {
+                      "principalType": "ServicePrincipal",
+                      "roleDefinitionId": "[concat('/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+                      "principalId": "[toLower(reference(concat('/providers/Microsoft.Authorization/policyAssignments/', variables('policyAssignmentName')), '2018-05-01', 'Full' ).identity.principalId)]"
+                  }
+              }
+          ],
+          "outputs": {}
+      },
+      "parameters": {}
   }
 }
